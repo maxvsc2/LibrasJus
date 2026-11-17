@@ -13,7 +13,7 @@ while nome == "":
 # Solicita o CPF e verifica se possui exatamente 11 caracteres.
 # Se não possuir, o usuário deverá digitá-lo novamente.
 
-CPF = input("Digite seu CPF (apenas números): ")
+CPF = input("Digite seu CPF: ")
 while len(CPF) != 11:     #o len ve o numero de caracteres
     print("O CPF deve conter 11 caracteres!")
     CPF = input("Digite seu CPF novamente: ")
@@ -30,7 +30,6 @@ while senha == "" or len(senha) < 5:
 
 print("Cadastro realizado com sucesso!")
 print(f"Bem-vindo ao LibrasJus, {nome}!")    #o f puxa a vairavel nome
-
 
 
 print("\n===== LOGIN DE USUÁRIO =====")
