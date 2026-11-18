@@ -1,0 +1,18 @@
+[
+    {
+        "nome": "max",
+        "cpf": "12345678910"
+    },
+    {
+        "nome": "lucas",
+        "cpf": "22222222222",
+        "salt": "a6b8ce91ceeaa27e4a9775fec3a19565",
+        "hash_senha": "cf295b21cdc21033000aec61e1ad6615f27c9769e74939af7fc4d65f0ea72f14e5bf79a54410367c95008f9b173b45c396db648cf68d72cd631fa342e5c2c767"
+    },
+    {
+        "nome": "lucas",
+        "cpf": "12345678911",
+        "salt": "4340fa96ddde199a50be3868417a77da",
+        "hash_senha": "eef62f8615f25b46ab9acb2514eaad4d06ba33615a7e9077666f86deb56ac74d4de4198831e6f816966fd5d90c07b0371a9a98358173497ff792adc127e159e0"
+    }
+]

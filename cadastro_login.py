@@ -1,54 +1,98 @@
+import hashlib
+import os
+
+
+import json
+
+import hmac
+
+with open("usuarios.json", "r", encoding="utf-8") as arquivo:
+    usuarios = json.load(arquivo)
+print(usuarios)
+
+
+
 #cadastro de usario
-print("===== LIBRASJUS =====")
-print("CADASTRO DE USUÁRIO")
 
-# Solicita o nome completo do usuário.
-# Enquanto o campo estiver vazio, o programa pede novamente.
+print("1- Cadastrar usuário")
+print("2- Login")
+print("3- Sair")
 
-nome = input("Digite seu nome completo: ")
-while nome == "":
-    print("Nome não informado!")
-    nome = input("Digite seu nome novamente: ")
+opcao = input("Digite a opção escolhida: ")
 
-# Solicita o CPF e verifica se possui exatamente 11 caracteres.
-# Se não possuir, o usuário deverá digitá-lo novamente.
+if opcao == "1":
+    print("CADASTRO DE USUÁRIO")
 
-CPF = input("Digite seu CPF (apenas números): ")
-while len(CPF) != 11:     #o len ve o numero de caracteres
-    print("O CPF deve conter 11 caracteres!")
-    CPF = input("Digite seu CPF novamente: ")
+    nome = input("Digite seu nome completo: ")    
+    while nome == "":
+        print("Nome não informado!")
+        nome = input("Digite seu nome novamente: ")
 
-# Solicita a criação de uma senha.
-# A senha não pode estar vazia e deve possuir pelo menos 5 caracteres.
+    CPF = input("Digite seu CPF: ")
+    while len(CPF) != 11:    
+        print("CPF inválido!")
+        CPF = input("Digite seu CPF novamente: ")
 
-senha = input("Crie uma senha: ")
-while senha == "" or len(senha) < 5:    
-    print("A senha deve conter pelo menos 5 caracteres!")
-    senha = input("Digite uma nova senha: ")
+    senha = input("Crie uma senha: ")
+    while senha == "" or len(senha) < 5:
+        print("A senha deve conter pelo menos 5 caracteres!")
+        senha = input("Digite uma nova senha: ")
+    salt = os.urandom(16)
 
-# Confirma que o cadastro foi concluído.
+    hash_senha = hashlib.scrypt(
+         senha.encode("utf-8"),
+        salt=salt,
+        n=16384,
+         r=8,
+         p=1
+     )
 
-print("Cadastro realizado com sucesso!")
-print(f"Bem-vindo ao LibrasJus, {nome}!")    #o f puxa a vairavel nome
+    usuario = {
+      "nome": nome,
+      "cpf": CPF,
+      "salt": salt.hex(),
+      "hash_senha": hash_senha.hex()
+    }
+    usuarios.append(usuario)
+    print(usuario["nome"])
+    with open("usuarios.json", "w", encoding="utf-8") as arquivo:
+      json.dump(usuarios, arquivo, indent=4, ensure_ascii=False)
+    print(usuarios)
+
+    print("Cadastro realizado com sucesso!")
+    print(f"Bem-vindo ao LibrasJus, {nome}!")    #o f puxa a vairavel nome
 
 
+elif opcao == "2":
+    print("LOGIN DE USUÁRIO") 
 
-print("\n===== LOGIN DE USUÁRIO =====")
+    cpf_login = input("Digite seu CPF: ")
+    senha_login = input("Digite sua senha: ")
 
-# Os dados cadastrados anteriormente ficam armazenados
-# nas variáveis CPF e senha 
+    cpf_encontrado = False
+    for usuario in usuarios:
+      if cpf_login == usuario["cpf"]:
+        cpf_encontrado = True
+        salt_salvo = bytes.fromhex(usuario["salt"])
+        hash_login = hashlib.scrypt(
+           senha_login.encode("utf-8"),
+    salt=salt_salvo,
+     n=16384,
+    r=8,
+    p=1
+)
+        hash_salvo = bytes.fromhex(usuario["hash_senha"])
+        if hmac.compare_digest(hash_login, hash_salvo):
+         print("Login realizado com sucesso!")
+        else:
+            print("CPF ou senha incorretos!")
 
-cpf_login = input("Digite seu CPF: ")
-senha_login = input("Digite sua senha: ")
+        if cpf_encontrado == False:
+         print("Conta não encontrada!")
+        
+elif opcao == "3": 
+    print("Encerrando")
 
-# Compara os dados digitados no login com os dados cadastrados.
-# O operador != significa "diferente de".
-# O operador or permite repetir caso o CPF OU a senha esteja incorreto.
+else: 
+    print("opcao invalida!")
 
-while cpf_login != CPF or senha_login != senha:
-    print("CPF ou senha incorretos! Tente novamente.")
-    cpf_login = input("Digite seu CPF novamente: ")
-    senha_login = input("Digite sua senha novamente: ")
-
-print("Login realizado com sucesso!")
-print(f"Bem-vindo de volta ao LibrasJus, {nome}!")
